@@ -1,4 +1,4 @@
 # g2p federated queries
 
-### Contact Information
-Alex Wagner (awagner24@wustl.edu)
+### Project Contacts
+[Alex Wagner](https://github.com/ahwagner)
