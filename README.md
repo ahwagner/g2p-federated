@@ -5,3 +5,4 @@
 [Ege Ulgen](https://github.com/egeulgen)  
 [Nogayhan Seymen](https://github.com/nogay)  
 [Begum Ozemek](https://github.com/begumo)  
+[Ozan Ozisik](https://github.com/ozanozisik)
