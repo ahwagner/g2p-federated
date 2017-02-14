@@ -13,6 +13,7 @@ class ClientManager:
     def add_client(self, datasets=None, featuresets=None, phenotypeassociationsets=None):
         """Add a g2p client to manager. Optionally restrict to specified
         datasets, featuresets, and phenotypeassociatonsets."""
+        pass
     
     def add_http_client(self, url_prefix, datasets=None, featuresets=None, phenotypeassociationsets=None):
         """Add a g2p HTTP client to manager. Optionally restrict to specified datasets, featuresets, and phenotypeassociatonsets."""
