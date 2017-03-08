@@ -1,3 +1,3 @@
 git+https://github.com/ga4gh/ga4gh-client.git@5eb33f0386368cbe6704d46636e96c3fa267dd4a#egg=ga4gh_client
 ga4gh-common==0.0.6
-ga4gh-schemas==0.6.0a10.dev8+ng73c3c90
+ga4gh-schemas==0.6.0a9.post2
