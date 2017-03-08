@@ -1,6 +1,11 @@
 import unittest
 
 from g2pf.clientManager import *
+from ga4gh.server import backend, datarepo
+from ga4gh.client import client
+
+b = backend.Backend(datarepo.SimulatedDataRepository())
+
 
 class TestClientManager(unittest.TestCase):
 
@@ -10,27 +15,41 @@ class TestClientManager(unittest.TestCase):
                                        datasets=["1kgenomes", "anotherOne"],
                                        featuresets=["f1", "f2"],
                                        phenotypeassociationsets=["p1", "p2"])
+        self.local_client1 = LocalClient(b)
+        self.local_client2 = LocalClient(b,
+                                         datasets=['1kgenomes', 'anotherOne'],
+                                         featuresets=['f1', 'f2'],
+                                         phenotypeassociationsets=['p1', 'p2'])
         self.manager = ClientManager()
-        
-    def check_restrictions_in_add_http_client(self, http_client, datasets=None, featuresets=None, phenotypeassociationsets=None):
-        client_manager = ClientManager()
-        client_manager.add_http_client(http_client, datasets, featuresets, phenotypeassociationsets)
-        c = client_manager.clientList[0]
-        self.check_restrictions(client_manager, c, datasets, featuresets, phenotypeassociationsets)
-        
-    def check_restrictions(self, client_manager, client, datasets, featuresets, phenotypeassociationsets):
-        self.assertEqual(len(client_manager.dictClientToRestrictedDatasets[client]), len(datasets))
-        self.assertEqual(len(client_manager.dictClientToRestrictedFeaturesets[client]), len(featuresets))
-        self.assertEqual(len(client_manager.dictClientToRestrictedPhenotypeassociationsets[client]), len(phenotypeassociationsets))
 
-    def test_add_http_clients(self):
-        client_init_lenth = len(self.manager)
+    def test_add_clients(self):
+        counts = list()
+        counts.append(len(self.manager))
         self.manager.add_http_client(self.http_client1)
-        client_number1 = len(self.manager)
+        counts.append(len(self.manager))
         self.manager.add_http_client(self.http_client2)
-        client_number2 = len(self.manager)
-        self.assertEqual(client_init_lenth + 1, client_number1)
-        self.assertEqual(client_number1 + 1, client_number2)
+        counts.append(len(self.manager))
+        self.manager.add_local_client(self.local_client1)
+        counts.append(len(self.manager))
+        self.manager.add_local_client(self.local_client2)
+        counts.append(len(self.manager))
+
+        self.assertItemsEqual(counts, range(5))
+
+    def test_add_clients_by_string(self):
+        self.manager.add_http_client('http://1kgenomes.ga4gh.org')
+        c = self.manager.client_list[-1]
+        self.assertEqual(c._url_prefix, 'http://1kgenomes.ga4gh.org')
+        self.manager.add_local_client()
+        c = self.manager.client_list[-1]
+        self.assertIsInstance(c, client.LocalClient)
+        self.assertIsInstance(c._backend._dataRepository, datarepo.SimulatedDataRepository)
+
+    def test_add_clients_type_error(self):
+        with self.assertRaises(TypeError):
+            self.manager.add_http_client(42)
+        with self.assertRaises(TypeError):
+            self.manager.add_local_client(None)
 
 
 class TestHttpClient(unittest.TestCase):
@@ -51,14 +70,20 @@ class TestHttpClient(unittest.TestCase):
         self.assertItemsEqual(self.http_client2.restricted_featuresets, ['f1', 'f2'])
         self.assertItemsEqual(self.http_client2.restricted_phenotypeassociationsets, ['p1', 'p2'])
 
-    def test_add_local_client(self):
-        self.fail()
 
-    def test_load_clients_from_config(self):
-        self.fail()
+class TestLocalClient(unittest.TestCase):
 
-    def test_federated_featurephenotypeassociaton_query(self):
-        self.fail()
+    def setUp(self):
+        self.local_client1 = LocalClient(b)
+        self.local_client2 = LocalClient(b,
+                                         datasets=['1kgenomes', 'anotherOne'],
+                                         featuresets=['f1', 'f2'],
+                                         phenotypeassociationsets=['p1', 'p2'])
+
+    def test_restrictions(self):
+        self.assertItemsEqual(self.local_client2.restricted_datasets, ['1kgenomes', 'anotherOne'])
+        self.assertItemsEqual(self.local_client2.restricted_featuresets, ['f1', 'f2'])
+        self.assertItemsEqual(self.local_client2.restricted_phenotypeassociationsets, ['p1', 'p2'])
 
 
 def main():
