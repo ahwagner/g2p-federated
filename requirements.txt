@@ -1,3 +1,8 @@
-git+https://github.com/ga4gh/ga4gh-client.git@5eb33f0386368cbe6704d46636e96c3fa267dd4a#egg=ga4gh_client
-ga4gh-common==0.0.6
+ga4gh-client==0.6.0a9.post2
+ga4gh-common==0.0.5
 ga4gh-schemas==0.6.0a9.post2
+humanize==0.5.1
+protobuf==3.1.0.post1
+PyYAML==3.12
+requests==2.13.0
+six==1.10.0
