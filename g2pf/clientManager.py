@@ -4,46 +4,54 @@ import configparser
 
 class ClientManager:
 
-    def __init__(self, args):
+    def __init__(self):
         self.clientList=[]
-        self.dictClientToRestrictedDatasets={}
-        self.dictClientToRestrictedFeaturesets={}
-        self.dictClientToRestrictedPhenotypeassociationsets={}
+
+    def __len__(self):
+        return len(self.clientList)
         
-    def add_http_client(self, url_prefix, datasets=None, featuresets=None, phenotypeassociationsets=None):
+    def add_http_client(self, http_client, datasets=None, featuresets=None, phenotypeassociationsets=None, **kwargs):
         """Add a g2p HTTP client to manager. Optionally restrict to specified datasets, featuresets, and phenotypeassociatonsets."""
-        c = client.HttpClient(url_prefix)
+        if isinstance(http_client, str):
+            c = HttpClient(http_client, datasets, featuresets, phenotypeassociationsets, **kwargs)
+        elif isinstance(http_client, HttpClient):
+            c = http_client
+        else:
+            raise TypeError('Expected http_client to be URL base string or HttpClient object')
         self.clientList.append(c)
-        self.restrict_client(c,datasets, featuresets, phenotypeassociationsets)
-        
-    #HTTP and Local client methods are seperate because local client constructor can take more parameters although I'm not using currently. 
-    def add_local_client(self,backend, datasets=None, featuresets=None, phenotypeassociationsets=None):
+
+    def add_local_client(self, local_client, datasets=None, featuresets=None, phenotypeassociationsets=None, **kwargs):
         """Add a g2p local client to manager."""
-        c = client.LocalClient(backend)
+        if isinstance(local_client, str):
+            c = LocalClient(local_client, datasets, featuresets, phenotypeassociationsets, **kwargs)
+        elif isinstance(local_client, LocalClient):
+            c = local_client
+        else:
+            raise TypeError('Expected local_client to be backend base string or LocalClient object')
         self.clientList.append(c)
-        self.restrict_client(c,datasets, featuresets, phenotypeassociationsets)
-        
-    def restrict_client(self, client, datasets=None, featuresets=None, phenotypeassociationsets=None):
-        """Restrict the client to specified datasets, featuresets, and phenotypeassociatonsets."""
-        if datasets is None:
-            self.dictClientToRestrictedDatasets[client]=[]
-        else:
-            self.dictClientToRestrictedDatasets[client]=datasets
-        if featuresets is None:
-            self.dictClientToRestrictedFeaturesets[client]=[]
-        else:
-            self.dictClientToRestrictedFeaturesets[client]=featuresets
-        if phenotypeassociationsets is None:
-            self.dictClientToRestrictedPhenotypeassociationsets[client]=[]
-        else:
-            self.dictClientToRestrictedPhenotypeassociationsets[client]=phenotypeassociationsets
         
     def load_clients_from_config(self, config_file):
-        """Add g2p clients from a specified configparser-compliant config
-        file."""
+        """Add g2p clients from a specified configparser-compliant config file."""
         pass
         
     def federated_featurephenotypeassociaton_query(self, args):
-        """Search all clients for feature-phenotype associations as defined by
-        args."""
+        """Search all clients for feature-phenotype associations as defined by args."""
         pass
+
+
+class HttpClient(client.HttpClient):
+
+    def __init__(self, url_prefix, datasets=None, featuresets=None, phenotypeassociationsets=None, **kwargs):
+        super(HttpClient, self).__init__(url_prefix, **kwargs)
+        self.restricted_datasets = datasets or []
+        self.restricted_featuresets = featuresets or []
+        self.restricted_phenotypeassociationsets = phenotypeassociationsets or []
+
+
+class LocalClient(client.LocalClient):
+
+    def __init__(self, backend, datasets=None, featuresets=None, phenotypeassociationsets=None, **kwargs):
+        super(LocalClient, self).__init__(backend, **kwargs)
+        self.restricted_datasets = datasets or []
+        self.restricted_featuresets = featuresets or []
+        self.restricted_phenotypeassociationsets = phenotypeassociationsets or []
