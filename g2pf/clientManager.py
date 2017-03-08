@@ -1,5 +1,5 @@
 from ga4gh.client import client
-import configparser
+import ConfigParser
 
 
 class ClientManager:
