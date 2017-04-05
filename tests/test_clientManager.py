@@ -51,6 +51,38 @@ class TestClientManager(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.manager.add_local_client(None)
 
+    def test_federated_featurephenotypeassociation_query_with_no_clients(self):
+        with self.assertRaises(RuntimeError):
+            feature_kwargs={'reference_name':"chr7",'start':55249005,'end':55249006}
+            phenotype_kwargs={'description':"Adenosquamous carcinoma .*"}
+            self.manager.federated_featurephenotypeassociaton_query(feature_kwargs,phenotype_kwargs)
+            
+    def test_federated_featurephenotypeassociation_query(self):
+        self.manager.add_http_client('http://1kgenomes.ga4gh.org')
+        #self.manager.add_local_client(datasets=["simulatedDataset0"])
+        self.manager.add_local_client()
+        
+        #feature_kwargs={'reference_name':"GL000195.1", 'start': 149089, 'end': 149287}
+        #feature_kwargs={'name':'EGFR S768I missense mutation'}
+        feature_kwargs={'reference_name':"chr7",'start':55249005,'end':55249006}
+        phenotype_kwargs={'description':"Adenosquamous carcinoma .*"}
+        federated_associations_1=self.manager.federated_featurephenotypeassociaton_query(feature_kwargs,phenotype_kwargs)
+        self.assertNotEqual(len(federated_associations_1),0)
+        
+        feature_kwargs={'reference_name':"chr7",'start':55249005,'end':55249006}
+        phenotype_kwargs={}
+        federated_associations_2=self.manager.federated_featurephenotypeassociaton_query(feature_kwargs,phenotype_kwargs)
+        self.assertNotEqual(len(federated_associations_2),0)
+        
+        feature_kwargs={}
+        phenotype_kwargs={'description':"Adenosquamous carcinoma .*"}
+        federated_associations_3=self.manager.federated_featurephenotypeassociaton_query(feature_kwargs,phenotype_kwargs)
+        self.assertNotEqual(len(federated_associations_3),0)
+        
+        self.assertTrue((len(federated_associations_2) >= len(federated_associations_1)) and 
+                        (len(federated_associations_3) >= len(federated_associations_1)))
+        
+
 
 class TestHttpClient(unittest.TestCase):
 
@@ -66,9 +98,9 @@ class TestHttpClient(unittest.TestCase):
         self.assertIsNotNone(dataset)
 
     def test_restrictions(self):
-        self.assertItemsEqual(self.http_client2.restricted_datasets, ['1kgenomes', 'anotherOne'])
-        self.assertItemsEqual(self.http_client2.restricted_featuresets, ['f1', 'f2'])
-        self.assertItemsEqual(self.http_client2.restricted_phenotypeassociationsets, ['p1', 'p2'])
+        self.assertItemsEqual(self.http_client2.allowed_datasets, ['1kgenomes', 'anotherOne'])
+        self.assertItemsEqual(self.http_client2.allowed_featuresets, ['f1', 'f2'])
+        self.assertItemsEqual(self.http_client2.allowed_phenotypeassociationsets, ['p1', 'p2'])
 
 
 class TestLocalClient(unittest.TestCase):
@@ -81,9 +113,9 @@ class TestLocalClient(unittest.TestCase):
                                          phenotypeassociationsets=['p1', 'p2'])
 
     def test_restrictions(self):
-        self.assertItemsEqual(self.local_client2.restricted_datasets, ['1kgenomes', 'anotherOne'])
-        self.assertItemsEqual(self.local_client2.restricted_featuresets, ['f1', 'f2'])
-        self.assertItemsEqual(self.local_client2.restricted_phenotypeassociationsets, ['p1', 'p2'])
+        self.assertItemsEqual(self.local_client2.allowed_datasets, ['1kgenomes', 'anotherOne'])
+        self.assertItemsEqual(self.local_client2.allowed_featuresets, ['f1', 'f2'])
+        self.assertItemsEqual(self.local_client2.allowed_phenotypeassociationsets, ['p1', 'p2'])
 
 
 def main():
