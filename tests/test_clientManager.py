@@ -98,9 +98,9 @@ class TestHttpClient(unittest.TestCase):
         self.assertIsNotNone(dataset)
 
     def test_restrictions(self):
-        self.assertItemsEqual(self.http_client2.restricted_datasets, ['1kgenomes', 'anotherOne'])
-        self.assertItemsEqual(self.http_client2.restricted_featuresets, ['f1', 'f2'])
-        self.assertItemsEqual(self.http_client2.restricted_phenotypeassociationsets, ['p1', 'p2'])
+        self.assertItemsEqual(self.http_client2.allowed_datasets, ['1kgenomes', 'anotherOne'])
+        self.assertItemsEqual(self.http_client2.allowed_featuresets, ['f1', 'f2'])
+        self.assertItemsEqual(self.http_client2.allowed_phenotypeassociationsets, ['p1', 'p2'])
 
 
 class TestLocalClient(unittest.TestCase):
@@ -113,9 +113,9 @@ class TestLocalClient(unittest.TestCase):
                                          phenotypeassociationsets=['p1', 'p2'])
 
     def test_restrictions(self):
-        self.assertItemsEqual(self.local_client2.restricted_datasets, ['1kgenomes', 'anotherOne'])
-        self.assertItemsEqual(self.local_client2.restricted_featuresets, ['f1', 'f2'])
-        self.assertItemsEqual(self.local_client2.restricted_phenotypeassociationsets, ['p1', 'p2'])
+        self.assertItemsEqual(self.local_client2.allowed_datasets, ['1kgenomes', 'anotherOne'])
+        self.assertItemsEqual(self.local_client2.allowed_featuresets, ['f1', 'f2'])
+        self.assertItemsEqual(self.local_client2.allowed_phenotypeassociationsets, ['p1', 'p2'])
 
 
 def main():
