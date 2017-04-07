@@ -41,7 +41,7 @@ class ClientManager:
         """Search all clients for feature-phenotype associations as defined by args."""
         if not self.client_list:
             raise RuntimeError('No client is added to the manager')
-        federated_associations=[]
+        federated_associations = []
         for c in self.client_list:
             datasets = c.search_datasets()
             phenotype_association_set_ids = []
@@ -62,7 +62,7 @@ class ClientManager:
                         for feature in feature_generator:
                             feature_ids.append(feature.id)
                 for phenotype_association_set_id in phenotype_association_set_ids:  
-                    feature_phenotype_associations = c.search_genotype_phenotype(phenotype_association_set_id = phenotype_association_set_id,
+                    feature_phenotype_associations = c.search_genotype_phenotype(phenotype_association_set_id=phenotype_association_set_id,
                                                                                  phenotype_ids=phenotype_ids, feature_ids=feature_ids)
                     for association in feature_phenotype_associations:
                         federated_associations.append(association)

@@ -53,8 +53,8 @@ class TestClientManager(unittest.TestCase):
 
     def test_federated_featurephenotypeassociation_query_with_no_clients(self):
         with self.assertRaises(RuntimeError):
-            feature_kwargs={'reference_name':"chr7",'start':55249005,'end':55249006}
-            phenotype_kwargs={'description':"Adenosquamous carcinoma .*"}
+            feature_kwargs = {'reference_name': "chr7", 'start': 55249005, 'end': 55249006}
+            phenotype_kwargs = {'description': "Adenosquamous carcinoma .*"}
             self.manager.federated_featurephenotypeassociaton_query(feature_kwargs,phenotype_kwargs)
             
     def test_federated_featurephenotypeassociation_query(self):
