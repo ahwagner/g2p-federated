@@ -1,3 +1,5 @@
+**Repository archived - project no longer active**
+
 [![Build Status](https://travis-ci.org/ahwagner/g2p-federated.svg?branch=master)](https://travis-ci.org/ahwagner/g2p-federated)
 # g2p federated queries
 
